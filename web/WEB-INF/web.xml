@@ -9,20 +9,10 @@
         <servlet-class>services.Test</servlet-class>
     </servlet>
 
-    <servlet>
-        <servlet-name>User</servlet-name>
-        <servlet-class>services.User</servlet-class>
-    </servlet>
-
     <!-- Servlet Map -->
     <servlet-mapping>
         <servlet-name>Test</servlet-name>
         <url-pattern>/service/test</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>User</servlet-name>
-        <url-pattern>/service/user</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>
