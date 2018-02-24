@@ -15,7 +15,7 @@
         <property name="yearIsDateType" value="false" />
       </driver-properties>
     </data-source>
-    <data-source source="LOCAL" name="noname-hibernate.cfg.xml@233/Hibernate" uuid="771a93d0-bf6e-40fc-8e39-8f64673c088c">
+    <data-source source="LOCAL" name="noname-hibernate.cfg.xml@233/Hibernate" uuid="9e237fae-5686-4baf-93dd-9dacf2325410">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>

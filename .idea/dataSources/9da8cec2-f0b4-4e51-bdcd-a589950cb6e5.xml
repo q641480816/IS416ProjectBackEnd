@@ -13,45 +13,5 @@
     <schema id="7" parent="1" name="sakila"/>
     <schema id="8" parent="1" name="sys"/>
     <schema id="9" parent="1" name="world"/>
-    <table id="10" parent="2" name="user"/>
-    <column id="11" parent="10" name="ACCOUNTID">
-      <Position>1</Position>
-      <DataType>int(11)|0</DataType>
-      <NotNull>1</NotNull>
-      <SequenceIdentity>1</SequenceIdentity>
-    </column>
-    <column id="12" parent="10" name="EMAIL">
-      <Position>2</Position>
-      <DataType>char(1)|0</DataType>
-    </column>
-    <column id="13" parent="10" name="PASSWORDHASH">
-      <Position>3</Position>
-      <DataType>char(1)|0</DataType>
-    </column>
-    <column id="14" parent="10" name="PASSWORDSALT">
-      <Position>4</Position>
-      <DataType>char(1)|0</DataType>
-    </column>
-    <column id="15" parent="10" name="NICKNAME">
-      <Position>5</Position>
-      <DataType>char(1)|0</DataType>
-    </column>
-    <column id="16" parent="10" name="DATEOFBIRTH">
-      <Position>6</Position>
-      <DataType>date|0</DataType>
-    </column>
-    <column id="17" parent="10" name="GENDER">
-      <Position>7</Position>
-      <DataType>char(1)|0</DataType>
-    </column>
-    <column id="18" parent="10" name="DATE">
-      <Position>8</Position>
-      <DataType>date|0</DataType>
-    </column>
-    <key id="19" parent="10" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>ACCOUNTID</ColNames>
-      <Primary>1</Primary>
-    </key>
   </database-model>
 </dataSource>
