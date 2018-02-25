@@ -1,6 +1,5 @@
 package util;
 
 public class Header {
-
-	public static final String AUTHORIZATION = "authorization";
+    public static final String AUTHORIZATION = "authorization";
 }
