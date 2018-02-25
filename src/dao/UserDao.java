@@ -1,5 +1,6 @@
 package dao;
 
+import ctrl.EncrypCtrl;
 import model.User;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
@@ -35,6 +36,29 @@ public class UserDao {
             user = (User) o;
             break;
         }
+        return user;
+    }
+    
+    public static User verifyAccount(String email, String password){
+        User user = getAccountByEmail(email);
+        
+        //can find user, but need verify password
+        if(user != null){
+            //get salt and hash it. 
+            String userPasswordSalt = user.getPasswordSalt();
+            String passwordHash = EncrypCtrl.generateSaltedHash(password, userPasswordSalt);
+
+            //correctly validated the hashed password
+            //return user if true else null
+            if(passwordHash.equals(user.getPasswordHash())){
+                return user;
+            }
+            else{
+                return null;
+            }
+        }
+                
+        //hit below directly if email is wrong
         return user;
     }
 }

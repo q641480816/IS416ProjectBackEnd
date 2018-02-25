@@ -45,8 +45,6 @@ public class Test extends HttpServlet {
         request.setCharacterEncoding(Config.ENCODING);
         response.setCharacterEncoding(Config.ENCODING);
         response.setContentType(Config.CONTENTTYPE);
-
-
     }
 
     @SuppressWarnings("unchecked")
@@ -54,8 +52,6 @@ public class Test extends HttpServlet {
         request.setCharacterEncoding(Config.ENCODING);
         response.setCharacterEncoding(Config.ENCODING);
         response.setContentType(Config.CONTENTTYPE);
-
-
     }
 
     @SuppressWarnings("unchecked")
@@ -63,9 +59,5 @@ public class Test extends HttpServlet {
         request.setCharacterEncoding(Config.ENCODING);
         response.setCharacterEncoding(Config.ENCODING);
         response.setContentType(Config.CONTENTTYPE);
-
-
     }
-
-
 }

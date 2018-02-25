@@ -4,21 +4,24 @@ import java.util.HashMap;
 
 public class SecretCtrl {
 
-    public static HashMap<String, String> as;
+    //Hashmap<secret, email> 
+    //add email to the secret. 
+    public static HashMap<String, String> accountSecret;
 
-    public static void addAcc (String s, String e){
-        if(as == null){
-            as = new HashMap<>();
+    public static void addAcc (String secret, String email){
+        if(accountSecret == null){
+            accountSecret = new HashMap<>();
         }
 
-        as.put(s,e);
+        accountSecret.put(secret,email);
     }
 
-    public static boolean check(String m, String s){
-        if(as == null){
-            as = new HashMap<>();
+    //check if the secret is correctly tired to the email
+    public static boolean check(String secret, String email){
+        if(accountSecret == null){
+            accountSecret = new HashMap<>();
         }
 
-        return as.containsKey(s) && m.equals(as.get(s));
+        return accountSecret.containsKey(secret) && email.equals(accountSecret.get(secret));
     }
 }

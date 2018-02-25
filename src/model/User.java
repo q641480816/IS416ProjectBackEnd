@@ -7,7 +7,6 @@ import util.Key;
 import java.util.Date;
 
 public class User {
-
     private long accountId;
 
     private String email;
