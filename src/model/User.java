@@ -106,6 +106,7 @@ public class User {
 
     public JSONObject toJson(){
         JSONObject obj = new JSONObject();
+        obj.put(Key.ACCOUNTID, this.accountId);
         obj.put(Key.EMAIL, email);
         obj.put(Key.NICKNAME, this.nickName);
         obj.put(Key.DATEOFBIRTH, Config.SDF.format(this.date));

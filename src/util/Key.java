@@ -9,6 +9,7 @@ public class Key {
 
     //User
     public static final String USER = "user";
+    public static final String ACCOUNTID = "accountId";
     public static final String EMAIL = "email";
     public static final String PASSWORD = "password";
     public static final String SECRET = "secret";
@@ -17,5 +18,14 @@ public class Key {
     public static final String GENDER = "gender";
     public static final String DATE = "date";
     public static final String AVATAR = "avatar";
-
+    
+    //Event
+    public static final String EVENT = "event";   
+    public static final String ID = "id";
+    public static final String LATITUDE = "latitude";
+    public static final String LONGITUDE = "longitude";
+    public static final String INITTIME = "initTime";
+    public static final String EVENTSTATUS = "eventStatus";
+    public static final String TYPE = "type";
+    public static final String PARTICIPANTS = "participants";
 }

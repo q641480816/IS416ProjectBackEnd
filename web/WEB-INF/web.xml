@@ -10,12 +10,16 @@
     </servlet>
 
     <servlet>
-        <servlet-name>Create</servlet-name>
+        <servlet-name>CreateUser</servlet-name>
         <servlet-class>services.CreateUser</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Login</servlet-name>
         <servlet-class>services.LoginUser</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateEvent</servlet-name>
+        <servlet-class>services.CreateEvent</servlet-class>
     </servlet>
 
     <!-- Servlet Map -->
@@ -25,12 +29,15 @@
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>Create</servlet-name>
+        <servlet-name>CreateUser</servlet-name>
         <url-pattern>/service/createUser</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/service/login</url-pattern>
+    </servlet-mapping>
+        <servlet-name>CreateEvent</servlet-name>
+        <url-pattern>/service/createEvent</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>
