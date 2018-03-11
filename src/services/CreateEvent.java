@@ -7,7 +7,9 @@ package services;
 
 import ctrl.EventCtrl;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
@@ -23,7 +25,7 @@ import util.Value;
  *
  * @author Jeffrey Pan
  */
-public class CreateEvent {
+public class CreateEvent extends HttpServlet{
     public CreateEvent(){
         super();
     }

@@ -23,6 +23,12 @@
           <element id="library" level="project" name="Maven: junit:junit:4.10" />
           <element id="library" level="project" name="Maven: org.hamcrest:hamcrest-core:1.1" />
           <element id="library" level="project" name="Maven: javax.servlet:javax.servlet-api:4.0.0" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-websocket:9.0.5" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-servlet-api:9.0.5" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-websocket-api:9.0.5" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-juli:9.0.5" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-util:9.0.5" />
+          <element id="library" level="project" name="Maven: javax:javaee-web-api:7.0" />
         </element>
       </element>
       <element id="directory" name="META-INF">

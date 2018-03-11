@@ -8,6 +8,8 @@ package model;
 import java.util.ArrayList;
 import java.util.Date;
 
+import dao.UserDao;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import util.Config;
 import util.Key;
@@ -17,7 +19,7 @@ import util.Key;
  * @author Jeffrey Pan
  */
 public class Event {
-    private int id;
+    private long id;
     private double latitude;
     private double longitude;
     private Date initTime;
@@ -29,7 +31,7 @@ public class Event {
         super();
     }
    
-    public Event(int id, double latitude, double longitude, Date initTime, int status, String type, ArrayList<Long> participants) {
+    public Event(long id, double latitude, double longitude, Date initTime, int status, String type, ArrayList<Long> participants) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -39,7 +41,7 @@ public class Event {
         this.participants = participants;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -91,6 +93,12 @@ public class Event {
         return participants;
     }
 
+    public void addParticipant(Long id){
+        ArrayList<Long> ps = getParticipants();
+        ps.add(id);
+        setParticipants(ps);
+    }
+
     public void setParticipants(ArrayList<Long> participants) {
         this.participants = participants;
     }
@@ -103,7 +111,12 @@ public class Event {
         obj.put(Key.INITTIME, Config.SDF.format(this.initTime));
         obj.put(Key.EVENTSTATUS, this.status);
         obj.put(Key.TYPE, this.type);
-        obj.put(Key.PARTICIPANTS, this.participants);
+        JSONArray participants = new JSONArray();
+        for (long i : this.participants){
+            User u = UserDao.getAccountById(i);
+            participants.add(u.toJson());
+        }
+        obj.put(Key.PARTICIPANTS, participants);
         return obj;
     }
     

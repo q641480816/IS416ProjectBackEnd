@@ -36,6 +36,7 @@
         <servlet-name>Login</servlet-name>
         <url-pattern>/service/login</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>CreateEvent</servlet-name>
         <url-pattern>/service/createEvent</url-pattern>
     </servlet-mapping>

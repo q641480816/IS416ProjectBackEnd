@@ -18,47 +18,33 @@ import model.Event;
  */
 public class EventDao {    
     
-    private static HashMap<Long, ArrayList<Event>> listOfEvents;
+    private static HashMap<Long, Event> EVENT_LIST;
     
     public static int getEventCount(){
-        if(listOfEvents == null || listOfEvents.isEmpty()){
+        if(EVENT_LIST == null || EVENT_LIST.isEmpty()){
             return 0;
         }
         
-        return listOfEvents.size();
+        return EVENT_LIST.size();
     }
     
-    public static int createNewEvent(long account_id, Event new_event){
-        try{
-            if(listOfEvents.get(account_id) == null){
-                ArrayList<Event> account_events = new ArrayList<>();
-                listOfEvents.put(account_id, account_events);
+    public static Event createNewEvent(long account_id, Event new_event){
+            if(EVENT_LIST == null){
+                EVENT_LIST = new HashMap<>();
             }
-            else{
-                ArrayList<Event> account_events = listOfEvents.get(account_id);
-                account_events.add(new_event);
-                listOfEvents.put(account_id, account_events);
-            }
-        
-            return 1;
-        }
-        catch(Exception e){
-            return -1;
-        }
-    }
-    
-    public static ArrayList<Event> getEventCreatedByUser(long account_id){
-        return listOfEvents.get(account_id);
+
+            EVENT_LIST.put(account_id, new_event);
+            return new_event;
     }
     
     public static ArrayList<Event> getAllUserEvents(long account_id){
-        ArrayList<Event> all_user_events = new ArrayList<>();
+        /*ArrayList<Event> all_user_events = new ArrayList<>();
         
-        Iterator it = listOfEvents.entrySet().iterator();
+        Iterator it = EVENT_LIST.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
             
-            ArrayList<Event> list_of_events_created = listOfEvents.get((Long) pair.getKey());
+            ArrayList<Event> list_of_events_created = EVENT_LIST.get((Long) pair.getKey());
                         
             for(int i = 0; i < list_of_events_created.size(); i++){
                 Event one_event = list_of_events_created.get(i);
@@ -79,44 +65,32 @@ public class EventDao {
             }           
                         
             it.remove(); // avoids a ConcurrentModificationException
-        }
+        }*/
         
-        return all_user_events;
+        return null;
     }
     
-    public static boolean joinEvent(int event_id, long account_id){
-        Iterator it = listOfEvents.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
-            ArrayList<Event> list_of_one_user_events = (ArrayList) pair.getValue();
-            for(int i = 0; i < list_of_one_user_events.size(); i++){
-                if(list_of_one_user_events.get(i).getId() == event_id){
-                    list_of_one_user_events.get(i).getParticipants().add(account_id);
-                    return true;
-                }
+    public static Event joinEvent(int event_id, long account_id){
+        try{
+            if (EVENT_LIST.containsKey(event_id)){
+                Event e = EVENT_LIST.get(event_id);
+                e.addParticipant(account_id);
+                EVENT_LIST.put(e.getId(),e);
+                return e;
+            }else {
+                return null;
             }
-            
-            it.remove(); // avoids a ConcurrentModificationException
+        }catch (Exception e){
+            return null;
         }
-        
-        return false;
     }
     
-    public static boolean clearEvent(int event_id){
-        Iterator it = listOfEvents.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
-            ArrayList<Event> list_of_one_user_events = (ArrayList) pair.getValue();
-            for(int i = 0; i < list_of_one_user_events.size(); i++){
-                if(list_of_one_user_events.get(i).getId() == event_id){
-                    list_of_one_user_events.remove(i);
-                    return true;
-                }
-            }
-            
-            it.remove(); // avoids a ConcurrentModificationException
+    public static boolean closeEvent(int event_id){
+        if (EVENT_LIST.containsKey(event_id)){
+            EVENT_LIST.remove(event_id);
+            return true;
+        }else {
+            return false;
         }
-        
-        return false;
     }
 }
