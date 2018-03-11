@@ -21,7 +21,7 @@ public class EventDao {
     private static HashMap<Long, ArrayList<Event>> listOfEvents;
     
     public static int getEventCount(){
-        if(listOfEvents.isEmpty() || listOfEvents == null){
+        if(listOfEvents == null || listOfEvents.isEmpty()){
             return 0;
         }
         
@@ -82,5 +82,41 @@ public class EventDao {
         }
         
         return all_user_events;
+    }
+    
+    public static boolean joinEvent(int event_id, long account_id){
+        Iterator it = listOfEvents.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            ArrayList<Event> list_of_one_user_events = (ArrayList) pair.getValue();
+            for(int i = 0; i < list_of_one_user_events.size(); i++){
+                if(list_of_one_user_events.get(i).getId() == event_id){
+                    list_of_one_user_events.get(i).getParticipants().add(account_id);
+                    return true;
+                }
+            }
+            
+            it.remove(); // avoids a ConcurrentModificationException
+        }
+        
+        return false;
+    }
+    
+    public static boolean clearEvent(int event_id){
+        Iterator it = listOfEvents.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            ArrayList<Event> list_of_one_user_events = (ArrayList) pair.getValue();
+            for(int i = 0; i < list_of_one_user_events.size(); i++){
+                if(list_of_one_user_events.get(i).getId() == event_id){
+                    list_of_one_user_events.remove(i);
+                    return true;
+                }
+            }
+            
+            it.remove(); // avoids a ConcurrentModificationException
+        }
+        
+        return false;
     }
 }

@@ -28,4 +28,5 @@ public class Key {
     public static final String EVENTSTATUS = "eventStatus";
     public static final String TYPE = "type";
     public static final String PARTICIPANTS = "participants";
+    public static final String SOCKETURL = "socketUrl";
 }

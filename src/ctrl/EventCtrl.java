@@ -37,12 +37,34 @@ public class EventCtrl {
             if(EventDao.createNewEvent((Long) inputJson.get(Key.ACCOUNTID), new_event) == 1){
                 JSONObject content = new JSONObject();
                 content.put(Key.EVENT, new_event.toJson());
-                
+                                
                 returnJson.put(Key.STATUS, Value.SUCCESS);
                 returnJson.put(Key.DATA, content); 
             }else{
                 returnJson.put(Key.STATUS, Value.FAIL);
                 returnJson.put(Key.MESSAGE, Message.USER_EXIST);
+           }
+        }catch (Exception e){
+            returnJson.put(Key.STATUS, Value.EXCEPTION);
+            returnJson.put(Key.EXCEPTION, e.getMessage());
+        }
+        return returnJson;
+    }
+    
+    public static JSONObject joinEvent(JSONObject inputJson) {
+        JSONObject returnJson = new JSONObject();
+        try {
+            int id = (int) inputJson.get(Key.ID);            
+            int account_id = (int) inputJson.get(Key.ACCOUNTID);
+            
+            boolean join_success = EventDao.joinEvent(id, account_id);
+                        
+            if(join_success){
+                JSONObject content = new JSONObject();
+                
+                returnJson.put(Key.STATUS, Value.SUCCESS);
+            }else{
+                returnJson.put(Key.STATUS, Value.FAIL);
            }
         }catch (Exception e){
             returnJson.put(Key.STATUS, Value.EXCEPTION);
