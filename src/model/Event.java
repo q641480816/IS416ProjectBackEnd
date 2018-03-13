@@ -112,8 +112,8 @@ public class Event {
         obj.put(Key.EVENTSTATUS, this.status);
         obj.put(Key.TYPE, this.type);
         JSONArray participants = new JSONArray();
-        for (long i : this.participants){
-            User u = UserDao.getAccountById(i);
+        ArrayList<User> users = UserDao.getUsersByIds(participants);
+        for (User u : users){
             participants.add(u.toJson());
         }
         obj.put(Key.PARTICIPANTS, participants);

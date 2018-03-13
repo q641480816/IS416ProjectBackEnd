@@ -27,6 +27,10 @@ public class EventDao {
         
         return EVENT_LIST.size();
     }
+
+    public static Event getEventById(long id){
+        return EVENT_LIST.get(id);
+    }
     
     public static Event createNewEvent(long account_id, Event new_event){
             if(EVENT_LIST == null){
@@ -36,38 +40,12 @@ public class EventDao {
             EVENT_LIST.put(account_id, new_event);
             return new_event;
     }
-    
-    public static ArrayList<Event> getAllUserEvents(long account_id){
-        /*ArrayList<Event> all_user_events = new ArrayList<>();
-        
-        Iterator it = EVENT_LIST.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            
-            ArrayList<Event> list_of_events_created = EVENT_LIST.get((Long) pair.getKey());
-                        
-            for(int i = 0; i < list_of_events_created.size(); i++){
-                Event one_event = list_of_events_created.get(i);
 
-                if((Long) pair.getKey() == account_id){
-                    all_user_events.add(one_event);
-                }
-                else{
-                     ArrayList<Long> one_event_participants = one_event.getParticipants();
-
-                    for(int j = 0; j < one_event_participants.size(); j++){
-                        if(one_event_participants.get(j) == account_id){
-                            all_user_events.add(one_event);
-                            break;
-                        }
-                    }
-                }                   
-            }           
-                        
-            it.remove(); // avoids a ConcurrentModificationException
-        }*/
-        
-        return null;
+    public static Event updateStatus(long event_id, int status){
+        Event e = EVENT_LIST.get(event_id);
+        e.setStatus(status);
+        EVENT_LIST.put(e.getId(),e);
+        return e;
     }
     
     public static Event joinEvent(int event_id, long account_id){
@@ -84,7 +62,7 @@ public class EventDao {
             return null;
         }
     }
-    
+
     public static boolean closeEvent(int event_id){
         if (EVENT_LIST.containsKey(event_id)){
             EVENT_LIST.remove(event_id);

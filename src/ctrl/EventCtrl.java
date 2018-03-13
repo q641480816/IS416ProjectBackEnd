@@ -20,6 +20,26 @@ import java.util.Date;
  * @author Jeffrey Pan
  */
 public class EventCtrl {
+
+    public static JSONObject getEvent(JSONObject inputJson){
+        JSONObject returnJson = new JSONObject();
+        try {
+            Long event_id = (Long) inputJson.get(Key.ID);
+            Event e = EventDao.getEventById(event_id);
+            if (e != null){
+                returnJson.put(Key.STATUS, Value.SUCCESS);
+                returnJson.put(Key.DATA, e.toJson());
+            }else {
+                returnJson.put(Key.STATUS, Value.FAIL);
+                returnJson.put(Key.MESSAGE, "NO EVENT");
+            }
+        }catch (Exception e){
+            returnJson.put(Key.STATUS, Value.EXCEPTION);
+            returnJson.put(Key.EXCEPTION, e.getMessage());
+        }
+        return returnJson;
+    }
+
     public static JSONObject createEvent(JSONObject inputJson) {
         JSONObject returnJson = new JSONObject();
         try {

@@ -7,6 +7,7 @@ import org.hibernate.criterion.Restrictions;
 import util.HibernateUtil;
 import util.Key;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDao {
@@ -60,5 +61,17 @@ public class UserDao {
                 
         //hit below directly if email is wrong
         return user;
+    }
+
+    public static ArrayList<User> getUsersByIds(ArrayList<Long> ids){
+        ArrayList<User> users = new ArrayList<>();
+        DetachedCriteria dc = DetachedCriteria.forClass(User.class);
+        dc.add(Restrictions.in("accountId", ids));
+        List<Object> list = HibernateUtil.detachedCriteriaReturnList(dc);
+        for(Object o: list){
+            users.add((User) o);
+        }
+
+        return users;
     }
 }
