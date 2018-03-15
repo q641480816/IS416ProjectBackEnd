@@ -13,7 +13,8 @@ import java.util.List;
 public class UserDao {
 
     public static User getAccountById(long id) {
-        return (User) HibernateUtil.get(User.class, id);
+        User u = (User) HibernateUtil.get(User.class, id);
+        return u;
     }
 
     public static void addAccount(User user) {
@@ -65,6 +66,7 @@ public class UserDao {
 
     public static ArrayList<User> getUsersByIds(ArrayList<Long> ids){
         ArrayList<User> users = new ArrayList<>();
+        System.out.println(ids);
         DetachedCriteria dc = DetachedCriteria.forClass(User.class);
         dc.add(Restrictions.in("accountId", ids));
         List<Object> list = HibernateUtil.detachedCriteriaReturnList(dc);

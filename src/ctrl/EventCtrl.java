@@ -71,7 +71,7 @@ public class EventCtrl {
             String type = (String) inputJson.get(Key.TYPE);
 
             ArrayList<Long> list_of_participants = new ArrayList<>();
-            list_of_participants.add((Long) inputJson.get(Key.ACCOUNTID));
+            list_of_participants.add(event_id);
             
             Event new_event = new Event(event_id, latitude, longitude, init_time, event_status, type, list_of_participants);
             

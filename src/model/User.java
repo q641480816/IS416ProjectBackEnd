@@ -111,7 +111,7 @@ public class User {
         obj.put(Key.NICKNAME, this.nickName);
         obj.put(Key.DATEOFBIRTH, Config.SDF.format(this.date));
         obj.put(Key.GENDER, this.gender);
-        obj.put(Key.DATE, Config.SDF.format(this.dateOfBirth));
+        obj.put(Key.DATE, Config.SDF.format(this.date));
         obj.put(Key.AVATAR, this.avatar);
         return obj;
     }
