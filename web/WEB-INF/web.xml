@@ -18,8 +18,8 @@
         <servlet-class>services.LoginUser</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>CreateEvent</servlet-name>
-        <servlet-class>services.CreateEvent</servlet-class>
+        <servlet-name>Event</servlet-name>
+        <servlet-class>services.Event</servlet-class>
     </servlet>
 
     <!-- Servlet Map -->
@@ -37,8 +37,8 @@
         <url-pattern>/service/login</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>CreateEvent</servlet-name>
-        <url-pattern>/service/createEvent</url-pattern>
+        <servlet-name>Event</servlet-name>
+        <url-pattern>/service/event/*</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>

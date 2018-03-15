@@ -5,10 +5,10 @@
  */
 package dao;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 import model.Event;
 
 
@@ -19,6 +19,8 @@ import model.Event;
 public class EventDao {    
     
     private static HashMap<Long, Event> EVENT_LIST;
+    private static double EARTH_RADIUS = 6378.137;
+    private static final String DISTANCE = "distance";
     
     public static int getEventCount(){
         if(EVENT_LIST == null || EVENT_LIST.isEmpty()){
@@ -70,5 +72,34 @@ public class EventDao {
         }else {
             return false;
         }
+    }
+
+    public static List<Event> getEventsInRange(double latitude, double longitude){
+        if(EVENT_LIST == null){
+            EVENT_LIST = new HashMap<>();
+        }
+
+        List<Event> out = EVENT_LIST.values().stream()
+                .parallel()
+                .filter(d -> {
+                    return getDistance(d.getLatitude(),d.getLongitude(),latitude,longitude) < 1000;
+                }).collect(Collectors.toList());
+
+        return out;
+    }
+
+    private static double getRadian(double degree) {
+        return degree * Math.PI / 180.0;
+    }
+
+    private static double getDistance(double lat1, double lng1, double lat2, double lng2) {
+        double radLat1 = getRadian(lat1);
+        double radLat2 = getRadian(lat2);
+        double a = radLat1 - radLat2;// 两点纬度差
+        double b = getRadian(lng1) - getRadian(lng2);// 两点的经度差
+        double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(radLat1)
+                * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+        s = s * EARTH_RADIUS;
+        return s * 1000;
     }
 }

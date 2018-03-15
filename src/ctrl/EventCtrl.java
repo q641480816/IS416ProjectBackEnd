@@ -7,13 +7,16 @@ package ctrl;
 
 import dao.EventDao;
 import model.Event;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import util.Key;
 import util.Message;
 import util.Value;
 
+import javax.json.Json;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -21,10 +24,9 @@ import java.util.Date;
  */
 public class EventCtrl {
 
-    public static JSONObject getEvent(JSONObject inputJson){
+    public static JSONObject getEvent(long event_id){
         JSONObject returnJson = new JSONObject();
         try {
-            Long event_id = (Long) inputJson.get(Key.ID);
             Event e = EventDao.getEventById(event_id);
             if (e != null){
                 returnJson.put(Key.STATUS, Value.SUCCESS);
@@ -33,6 +35,24 @@ public class EventCtrl {
                 returnJson.put(Key.STATUS, Value.FAIL);
                 returnJson.put(Key.MESSAGE, "NO EVENT");
             }
+        }catch (Exception e){
+            returnJson.put(Key.STATUS, Value.EXCEPTION);
+            returnJson.put(Key.EXCEPTION, e.getMessage());
+        }
+        return returnJson;
+    }
+
+    public static JSONObject getEventsInRange(double la, double lo){
+        JSONObject returnJson = new JSONObject();
+
+        try {
+            JSONArray jsonArray = new JSONArray();
+            List<Event> data = EventDao.getEventsInRange(la,lo);
+            for(Event e : data){
+                jsonArray.add(e.toJson());
+            }
+            returnJson.put(Key.DATA, jsonArray);
+            returnJson.put(Key.STATUS, Value.SUCCESS);
         }catch (Exception e){
             returnJson.put(Key.STATUS, Value.EXCEPTION);
             returnJson.put(Key.EXCEPTION, e.getMessage());

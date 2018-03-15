@@ -7,6 +7,7 @@ package services;
 
 import ctrl.EventCtrl;
 
+import javax.naming.event.EventContext;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,12 +26,39 @@ import util.Value;
  *
  * @author Jeffrey Pan
  */
-public class CreateEvent extends HttpServlet{
-    public CreateEvent(){
+public class Event extends HttpServlet{
+    public Event(){
         super();
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding(Config.ENCODING);
+        response.setCharacterEncoding(Config.ENCODING);
+        response.setContentType(Config.CONTENTTYPE);
+        JSONObject returnJson = new JSONObject();
+
+        try{
+            String[] args = request.getPathInfo().split("/");
+            if (args.length > 2){
+                String[] subArgs = args[2].split(",");
+                System.out.println(request.getPathInfo());
+                returnJson = EventCtrl.getEventsInRange(Double.parseDouble(subArgs[0]),Double.parseDouble(subArgs[1]));
+            }else{
+                System.out.println(request.getPathInfo());
+                returnJson = EventCtrl.getEvent(Long.parseLong(args[1]));
+            }
+            response.setStatus(200);
+        }catch (Exception e){
+            response.setStatus(403);
+            e.printStackTrace();
+            returnJson.put(Key.STATUS, Value.EXCEPTION);
+            returnJson.put(Key.EXCEPTION, e.getMessage());
+        }
+        response.getWriter().println(returnJson.toJSONString());
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding(Config.ENCODING);
         response.setCharacterEncoding(Config.ENCODING);

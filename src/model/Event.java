@@ -8,6 +8,7 @@ package model;
 import java.util.ArrayList;
 import java.util.Date;
 
+import ctrl.UserCtrl;
 import dao.UserDao;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -111,6 +112,7 @@ public class Event {
         obj.put(Key.INITTIME, Config.SDF.format(this.initTime));
         obj.put(Key.EVENTSTATUS, this.status);
         obj.put(Key.TYPE, this.type);
+        obj.put(Key.OWNER, UserDao.getAccountById(this.id).toJson());
         JSONArray participants = new JSONArray();
         ArrayList<User> users = UserDao.getUsersByIds(participants);
         for (User u : users){

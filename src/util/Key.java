@@ -22,6 +22,7 @@ public class Key {
     //Event
     public static final String EVENT = "event";   
     public static final String ID = "id";
+    public static final String OWNER = "owner";
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";
     public static final String INITTIME = "initTime";
