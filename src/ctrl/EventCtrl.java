@@ -66,7 +66,7 @@ public class EventCtrl {
             Long event_id = (Long) inputJson.get(Key.ACCOUNTID);
             double latitude = (double) inputJson.get(Key.LATITUDE);
             double longitude = (double) inputJson.get(Key.LONGITUDE);
-            Date init_time = (Date) inputJson.get(Key.INITTIME);
+            Date init_time = new Date();
             int event_status = 0;
             String type = (String) inputJson.get(Key.TYPE);
 
