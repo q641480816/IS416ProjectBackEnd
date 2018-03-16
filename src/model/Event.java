@@ -26,13 +26,14 @@ public class Event {
     private Date initTime;
     private int status;
     private String type;
+    private String location;
     private ArrayList<Long> participants;
     
     public Event() {
         super();
     }
    
-    public Event(long id, double latitude, double longitude, Date initTime, int status, String type, ArrayList<Long> participants) {
+    public Event(long id, double latitude, double longitude, String location, Date initTime, int status, String type, ArrayList<Long> participants) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -40,6 +41,7 @@ public class Event {
         this.status = status;
         this.type = type;
         this.participants = participants;
+        this.location = location;
     }
 
     public long getId() {
@@ -94,6 +96,14 @@ public class Event {
         return participants;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     public void addParticipant(long id){
         ArrayList<Long> ps = getParticipants();
         ps.add(id);
@@ -113,6 +123,7 @@ public class Event {
         obj.put(Key.EVENTSTATUS, this.status);
         obj.put(Key.TYPE, this.type);
         obj.put(Key.OWNER, UserDao.getAccountById(this.id).toJson());
+        obj.put(Key.LOCATION, this.location);
         JSONArray participants = new JSONArray();
         ArrayList<User> users = UserDao.getUsersByIds(this.participants);
         for (User u : users){

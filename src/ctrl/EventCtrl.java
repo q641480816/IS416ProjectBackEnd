@@ -82,6 +82,7 @@ public class EventCtrl {
             Long event_id = (Long) inputJson.get(Key.ACCOUNTID);
             double latitude = (double) inputJson.get(Key.LATITUDE);
             double longitude = (double) inputJson.get(Key.LONGITUDE);
+            String location = (String)  inputJson.get(Key.LOCATION);
             Date init_time = new Date();
             int event_status = Value.EVENT_STATUS_JOINING;
             String type = (String) inputJson.get(Key.TYPE);
@@ -89,7 +90,7 @@ public class EventCtrl {
             ArrayList<Long> list_of_participants = new ArrayList<>();
             list_of_participants.add(event_id);
             
-            Event new_event = new Event(event_id, latitude, longitude, init_time, event_status, type, list_of_participants);
+            Event new_event = new Event(event_id, latitude, longitude, location, init_time, event_status, type, list_of_participants);
             
             if(EventDao.createNewEvent(event_id, new_event) != null){
                 JSONObject content = new JSONObject();
