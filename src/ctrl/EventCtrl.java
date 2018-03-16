@@ -24,6 +24,22 @@ import java.util.List;
  */
 public class EventCtrl {
 
+    public static JSONObject getEvents(){
+        JSONObject returnJson = new JSONObject();
+        try {
+            JSONArray data = new JSONArray();
+            for (Event e : EventDao.getAllEvents()){
+                data.add(e.toJson());
+            }
+            returnJson.put(Key.STATUS, Value.SUCCESS);
+            returnJson.put(Key.DATA, data);
+        }catch (Exception e){
+            returnJson.put(Key.STATUS, Value.EXCEPTION);
+            returnJson.put(Key.EXCEPTION, e.getMessage());
+        }
+        return returnJson;
+    }
+
     public static JSONObject getEvent(long event_id){
         JSONObject returnJson = new JSONObject();
         try {
@@ -67,7 +83,7 @@ public class EventCtrl {
             double latitude = (double) inputJson.get(Key.LATITUDE);
             double longitude = (double) inputJson.get(Key.LONGITUDE);
             Date init_time = new Date();
-            int event_status = 0;
+            int event_status = Value.EVENT_STATUS_JOINING;
             String type = (String) inputJson.get(Key.TYPE);
 
             ArrayList<Long> list_of_participants = new ArrayList<>();
@@ -78,7 +94,6 @@ public class EventCtrl {
             if(EventDao.createNewEvent(event_id, new_event) != null){
                 JSONObject content = new JSONObject();
                 content.put(Key.EVENT, new_event.toJson());
-                                
                 returnJson.put(Key.STATUS, Value.SUCCESS);
                 returnJson.put(Key.DATA, content); 
             }else{
@@ -95,14 +110,33 @@ public class EventCtrl {
     public static JSONObject joinEvent(JSONObject inputJson) {
         JSONObject returnJson = new JSONObject();
         try {
-            int id = (int) inputJson.get(Key.ID);            
-            int account_id = (int) inputJson.get(Key.ACCOUNTID);
+            long id = (long) inputJson.get(Key.ID);
+            long account_id = (long) inputJson.get(Key.ACCOUNTID);
             Event event = EventDao.joinEvent(id, account_id);
             if(event != null){
                 returnJson.put(Key.DATA, event.toJson());
                 returnJson.put(Key.STATUS, Value.SUCCESS);
             }else{
                 returnJson.put(Key.STATUS, Value.FAIL);
+            }
+        }catch (Exception e){
+            returnJson.put(Key.STATUS, Value.EXCEPTION);
+            returnJson.put(Key.EXCEPTION, e.getMessage());
+        }
+        return returnJson;
+    }
+
+    public static JSONObject updateEventStatus(JSONObject inputJson){
+        JSONObject returnJson = new JSONObject();
+        try {
+            long id = (long) inputJson.get(Key.ID);
+            long status = (long) inputJson.get(Key.EVENTSTATUS);
+            if (status == Value.EVENT_STATUS_STOPPED){
+                if(EventDao.closeEvent(id)){
+                    returnJson.put(Key.STATUS, Value.SUCCESS);
+                }else {
+                    returnJson.put(Key.STATUS, Value.FAIL);
+                }
             }
         }catch (Exception e){
             returnJson.put(Key.STATUS, Value.EXCEPTION);

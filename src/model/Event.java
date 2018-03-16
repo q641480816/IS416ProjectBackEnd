@@ -94,7 +94,7 @@ public class Event {
         return participants;
     }
 
-    public void addParticipant(Long id){
+    public void addParticipant(long id){
         ArrayList<Long> ps = getParticipants();
         ps.add(id);
         setParticipants(ps);
@@ -113,8 +113,6 @@ public class Event {
         obj.put(Key.EVENTSTATUS, this.status);
         obj.put(Key.TYPE, this.type);
         obj.put(Key.OWNER, UserDao.getAccountById(this.id).toJson());
-
-
         JSONArray participants = new JSONArray();
         ArrayList<User> users = UserDao.getUsersByIds(this.participants);
         for (User u : users){

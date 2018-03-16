@@ -40,13 +40,14 @@ public class Event extends HttpServlet{
 
         try{
             String[] args = request.getPathInfo().split("/");
-            if (args.length > 2){
+            if (args.length == 3){
                 String[] subArgs = args[2].split(",");
-                System.out.println(request.getPathInfo());
                 returnJson = EventCtrl.getEventsInRange(Double.parseDouble(subArgs[0]),Double.parseDouble(subArgs[1]));
-            }else{
+            }else if(args.length == 2){
                 System.out.println(request.getPathInfo());
                 returnJson = EventCtrl.getEvent(Long.parseLong(args[1]));
+            }else {
+                returnJson = EventCtrl.getEvents();
             }
             response.setStatus(200);
         }catch (Exception e){
@@ -90,4 +91,37 @@ public class Event extends HttpServlet{
         response.getWriter().println(returnJson.toJSONString());
     }
 
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding(Config.ENCODING);
+        response.setCharacterEncoding(Config.ENCODING);
+        response.setContentType(Config.CONTENTTYPE);
+
+        StringBuffer jb = new StringBuffer();
+        String line = null;
+        JSONObject returnJson = new JSONObject();
+
+        try {
+            BufferedReader reader = request.getReader();
+
+            while((line = reader.readLine()) != null) {
+                jb.append(line);
+            }
+
+            JSONObject inputJson = (JSONObject) JSONValue.parse(jb.toString());
+            if (inputJson.containsKey(Key.ACCOUNTID)){
+                returnJson = EventCtrl.joinEvent(inputJson);
+            }else if(inputJson.containsKey(Key.EVENTSTATUS)){
+                returnJson = EventCtrl.updateEventStatus(inputJson);
+            }
+            response.setStatus(200);
+        } catch(Exception e) {
+            response.setStatus(403);
+            e.printStackTrace();
+            returnJson.put(Key.STATUS, Value.EXCEPTION);
+            returnJson.put(Key.EXCEPTION, e.getMessage());
+        }
+
+        response.getWriter().println(returnJson.toJSONString());
+    }
 }

@@ -21,7 +21,11 @@ public class EventDao {
     private static HashMap<Long, Event> EVENT_LIST;
     private static double EARTH_RADIUS = 6378.137;
     private static final String DISTANCE = "distance";
-    
+
+    public static Collection<Event> getAllEvents(){
+        return getEventCount() == 0 ? new ArrayList<Event>() : EVENT_LIST.values();
+    }
+
     public static int getEventCount(){
         if(EVENT_LIST == null || EVENT_LIST.isEmpty()){
             return 0;
@@ -50,7 +54,7 @@ public class EventDao {
         return e;
     }
     
-    public static Event joinEvent(int event_id, long account_id){
+    public static Event joinEvent(long event_id, long account_id){
         try{
             if (EVENT_LIST.containsKey(event_id)){
                 Event e = EVENT_LIST.get(event_id);
@@ -65,7 +69,7 @@ public class EventDao {
         }
     }
 
-    public static boolean closeEvent(int event_id){
+    public static boolean closeEvent(long event_id){
         if (EVENT_LIST.containsKey(event_id)){
             EVENT_LIST.remove(event_id);
             return true;
