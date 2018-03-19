@@ -5,11 +5,14 @@
  */
 package dao;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import model.Event;
+import util.Key;
+import util.Value;
 
 
 /**
@@ -21,6 +24,9 @@ public class EventDao {
     private static HashMap<Long, Event> EVENT_LIST;
     private static double EARTH_RADIUS = 6378.137;
     private static final String DISTANCE = "distance";
+    
+    //0) date, 1)lat, 2)lat
+    private static HashMap<Long, ArrayList<String>> SHAKE_LIST;
 
     public static Collection<Event> getAllEvents(){
         return getEventCount() == 0 ? new ArrayList<Event>() : EVENT_LIST.values();
@@ -39,12 +45,12 @@ public class EventDao {
     }
     
     public static Event createNewEvent(long account_id, Event new_event){
-            if(EVENT_LIST == null){
-                EVENT_LIST = new HashMap<>();
-            }
+        if(EVENT_LIST == null){
+            EVENT_LIST = new HashMap<>();
+        }
 
-            EVENT_LIST.put(account_id, new_event);
-            return new_event;
+        EVENT_LIST.put(account_id, new_event);
+        return new_event;
     }
 
     public static Event updateStatus(long event_id, int status){
@@ -68,7 +74,7 @@ public class EventDao {
             return null;
         }
     }
-
+    
     public static boolean closeEvent(long event_id){
         if (EVENT_LIST.containsKey(event_id)){
             EVENT_LIST.remove(event_id);
@@ -84,10 +90,12 @@ public class EventDao {
         }
 
         List<Event> out = EVENT_LIST.values().stream()
-                .parallel()
-                .filter(d -> {
+            .parallel()
+            .filter(
+                d -> {
                     return getDistance(d.getLatitude(),d.getLongitude(),latitude,longitude) < 1000;
-                }).collect(Collectors.toList());
+                }
+            ).collect(Collectors.toList());
 
         return out;
     }
@@ -100,10 +108,85 @@ public class EventDao {
         double radLat1 = getRadian(lat1);
         double radLat2 = getRadian(lat2);
         double a = radLat1 - radLat2;// 两点纬度差
-        double b = getRadian(lng1) - getRadian(lng2);// 两点的经度差
+        double b = getRadian(lng1) - getRadian(lng2);// 两点的�?度差
         double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(radLat1)
                 * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
         s = s * EARTH_RADIUS;
         return s * 1000;
+    }
+    
+    public static boolean leaveEvent(long event_id, long account_id){
+        try{
+            if (EVENT_LIST.containsKey(event_id)){
+                EVENT_LIST.remove(event_id);
+                return true;
+            }else {
+                return false;
+            }
+        }catch (Exception e){
+            return false;
+        }
+    }
+    
+    public static Event shakeJoinEvent(long account_id, double lat, double lng) throws ParseException{
+        //first user
+        if (SHAKE_LIST == null || SHAKE_LIST.size() == 0){
+            SHAKE_LIST = new HashMap<>();            
+                       
+            ArrayList<String> userDetails = new ArrayList<>();
+            Date time_stamp = new Date();
+            userDetails.add(time_stamp.toString());
+            userDetails.add("" + lat);
+            userDetails.add("" + lng);
+            
+            SHAKE_LIST.put(account_id, userDetails);
+        }
+        
+        //add if cannot find user in the hashmap
+        if(!SHAKE_LIST.containsKey(account_id)){
+            ArrayList<String> userDetails = new ArrayList<>();
+            Date time_stamp = new Date();
+            userDetails.add(time_stamp.toString());
+            userDetails.add("" + lat);
+            userDetails.add("" + lng);
+
+            SHAKE_LIST.put(account_id, userDetails);
+        }
+                        
+        for(int i = 0; i < SHAKE_LIST.size(); i++){
+            Iterator it = SHAKE_LIST.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry)it.next();
+                ArrayList<String> retrieved_details = SHAKE_LIST.get(pair.getKey());
+                
+                SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                Date user_date = format.parse(retrieved_details.get(0));
+                Date now_date = new Date();
+                    
+                if((now_date.getTime()  - user_date.getTime() ) / 1000 % 60 > 5) {
+                    //expired, remove this account from hashmap
+                    SHAKE_LIST.remove((Long)pair.getKey());
+                }
+                else{
+                    //check if within radius against other users
+                    if((Long)pair.getKey() != account_id){
+                        if(getDistance(lat, lng, Double.parseDouble(retrieved_details.get(1)), Double.parseDouble(retrieved_details.get(2))) > 2000){
+                            //match!
+                            //create event 
+                            ArrayList<Long> list_of_participants = new ArrayList<>();
+                            list_of_participants.add(account_id);
+                            list_of_participants.add((Long)pair.getKey());
+                            Event new_event = createNewEvent(account_id, new Event(account_id, lat, lng, "", new Date(), Value.EVENT_STATUS_STARTED, "",  new ArrayList<>()));
+                            return new_event;
+                        }
+                        return null;
+                    }                    
+                }
+                
+                it.remove(); // avoids a ConcurrentModificationException
+            }
+        }
+        
+        return null;
     }
 }

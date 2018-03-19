@@ -20,7 +20,7 @@ import util.Key;
  * @author Jeffrey Pan
  */
 public class Event {
-    private long id;
+    private long account_id;
     private double latitude;
     private double longitude;
     private Date initTime;
@@ -33,8 +33,8 @@ public class Event {
         super();
     }
    
-    public Event(long id, double latitude, double longitude, String location, Date initTime, int status, String type, ArrayList<Long> participants) {
-        this.id = id;
+    public Event(long account_id, double latitude, double longitude, String location, Date initTime, int status, String type, ArrayList<Long> participants) {
+        this.account_id = account_id;
         this.latitude = latitude;
         this.longitude = longitude;
         this.initTime = initTime;
@@ -45,11 +45,11 @@ public class Event {
     }
 
     public long getId() {
-        return id;
+        return account_id;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.account_id = id;
     }
 
     public double getLatitude() {
@@ -116,13 +116,13 @@ public class Event {
     
     public JSONObject toJson(){
         JSONObject obj = new JSONObject();
-        obj.put(Key.ID, this.id);
+        obj.put(Key.ID, this.account_id);
         obj.put(Key.LATITUDE, this.latitude);
         obj.put(Key.LONGITUDE, this.longitude);
         obj.put(Key.INITTIME, Config.SDF.format(this.initTime));
         obj.put(Key.EVENTSTATUS, this.status);
         obj.put(Key.TYPE, this.type);
-        obj.put(Key.OWNER, UserDao.getAccountById(this.id).toJson());
+        obj.put(Key.OWNER, UserDao.getAccountById(this.account_id).toJson());
         obj.put(Key.LOCATION, this.location);
         JSONArray participants = new JSONArray();
         ArrayList<User> users = UserDao.getUsersByIds(this.participants);

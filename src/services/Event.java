@@ -113,6 +113,10 @@ public class Event extends HttpServlet{
                 returnJson = EventCtrl.joinEvent(inputJson);
             }else if(inputJson.containsKey(Key.EVENTSTATUS)){
                 returnJson = EventCtrl.updateEventStatus(inputJson);
+            }else if(inputJson.containsKey(Key.LEAVE)){
+                returnJson = EventCtrl.leaveEvent(inputJson);
+            }else if(inputJson.containsKey(Key.SHAKE)){
+                returnJson = EventCtrl.shakeJoinEvent(inputJson);
             }
             response.setStatus(200);
         } catch(Exception e) {

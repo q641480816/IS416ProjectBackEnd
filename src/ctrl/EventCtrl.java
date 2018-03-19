@@ -79,7 +79,7 @@ public class EventCtrl {
     public static JSONObject createEvent(JSONObject inputJson) {
         JSONObject returnJson = new JSONObject();
         try {
-            Long event_id = (Long) inputJson.get(Key.ACCOUNTID);
+            Long account_id = (Long) inputJson.get(Key.ACCOUNTID);
             double latitude = (double) inputJson.get(Key.LATITUDE);
             double longitude = (double) inputJson.get(Key.LONGITUDE);
             String location = (String)  inputJson.get(Key.LOCATION);
@@ -88,11 +88,11 @@ public class EventCtrl {
             String type = (String) inputJson.get(Key.TYPE);
 
             ArrayList<Long> list_of_participants = new ArrayList<>();
-            list_of_participants.add(event_id);
+            list_of_participants.add(account_id);
             
-            Event new_event = new Event(event_id, latitude, longitude, location, init_time, event_status, type, list_of_participants);
+            Event new_event = new Event(account_id, latitude, longitude, location, init_time, event_status, type, list_of_participants);
             
-            if(EventDao.createNewEvent(event_id, new_event) != null){
+            if(EventDao.createNewEvent(account_id, new_event) != null){
                 JSONObject content = new JSONObject();
                 content.put(Key.EVENT, new_event.toJson());
                 returnJson.put(Key.STATUS, Value.SUCCESS);
@@ -126,7 +126,7 @@ public class EventCtrl {
         }
         return returnJson;
     }
-
+    
     public static JSONObject updateEventStatus(JSONObject inputJson){
         JSONObject returnJson = new JSONObject();
         try {
@@ -138,6 +138,46 @@ public class EventCtrl {
                 }else {
                     returnJson.put(Key.STATUS, Value.FAIL);
                 }
+            }
+        }catch (Exception e){
+            returnJson.put(Key.STATUS, Value.EXCEPTION);
+            returnJson.put(Key.EXCEPTION, e.getMessage());
+        }
+        return returnJson;
+    }
+    
+    public static JSONObject leaveEvent(JSONObject inputJson) {
+        JSONObject returnJson = new JSONObject();
+        try {
+            long id = (long) inputJson.get(Key.ID);
+            long account_id = (long) inputJson.get(Key.ACCOUNTID);
+            boolean leave_status = EventDao.leaveEvent(id, account_id);
+            if(leave_status == true){
+                returnJson.put(Key.STATUS, Value.SUCCESS);
+            }else{
+                returnJson.put(Key.STATUS, Value.FAIL);
+            }
+        }catch (Exception e){
+            returnJson.put(Key.STATUS, Value.EXCEPTION);
+            returnJson.put(Key.EXCEPTION, e.getMessage());
+        }
+        return returnJson;
+    }
+    
+    public static JSONObject shakeJoinEvent(JSONObject inputJson) {
+        JSONObject returnJson = new JSONObject();
+        try {
+            long id = (long) inputJson.get(Key.ID);
+            long account_id = (long) inputJson.get(Key.ACCOUNTID);
+            double latitude = (double) inputJson.get(Key.LATITUDE);
+            double longitude = (double) inputJson.get(Key.LONGITUDE);
+            
+            Event shake_event = EventDao.shakeJoinEvent(account_id, latitude, longitude);
+            if(shake_event != null){
+                returnJson.put(Key.DATA, shake_event.toJson());
+                returnJson.put(Key.STATUS, Value.SUCCESS);
+            }else{
+                returnJson.put(Key.STATUS, Value.FAIL);
             }
         }catch (Exception e){
             returnJson.put(Key.STATUS, Value.EXCEPTION);
