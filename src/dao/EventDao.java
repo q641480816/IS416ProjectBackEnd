@@ -20,8 +20,9 @@ import util.Value;
  * @author Jeffrey Pan
  */
 public class EventDao {    
-    
-    private static HashMap<Long, Event> EVENT_LIST;
+
+    public static HashSet<Long> IN_EVENT_USERS;
+    public static HashMap<Long, Event> EVENT_LIST;
     private static double EARTH_RADIUS = 6378.137;
     private static final String DISTANCE = "distance";
     
@@ -47,9 +48,11 @@ public class EventDao {
     public static Event createNewEvent(long account_id, Event new_event){
         if(EVENT_LIST == null){
             EVENT_LIST = new HashMap<>();
+            IN_EVENT_USERS = new HashSet<>();
         }
 
         EVENT_LIST.put(account_id, new_event);
+        IN_EVENT_USERS.add(account_id);
         return new_event;
     }
 
@@ -65,6 +68,7 @@ public class EventDao {
             if (EVENT_LIST.containsKey(event_id)){
                 Event e = EVENT_LIST.get(event_id);
                 e.addParticipant(account_id);
+                IN_EVENT_USERS.add(account_id);
                 EVENT_LIST.put(e.getId(),e);
                 return e;
             }else {
@@ -77,7 +81,10 @@ public class EventDao {
     
     public static boolean closeEvent(long event_id){
         if (EVENT_LIST.containsKey(event_id)){
-            EVENT_LIST.remove(event_id);
+            Event e = EVENT_LIST.remove(event_id);
+            for(long uId : e.getParticipants()){
+                IN_EVENT_USERS.remove(uId);
+            }
             return true;
         }else {
             return false;
@@ -90,12 +97,9 @@ public class EventDao {
         }
 
         List<Event> out = EVENT_LIST.values().stream()
-            .parallel()
-            .filter(
-                d -> {
-                    return getDistance(d.getLatitude(),d.getLongitude(),latitude,longitude) < 1000;
-                }
-            ).collect(Collectors.toList());
+                .parallel()
+                .filter(d -> Integer.MAX_VALUE == d.getSizeLimit() &&getDistance(d.getLatitude(),d.getLongitude(),latitude,longitude) < 1000)
+                .collect(Collectors.toList());
 
         return out;
     }
@@ -108,7 +112,7 @@ public class EventDao {
         double radLat1 = getRadian(lat1);
         double radLat2 = getRadian(lat2);
         double a = radLat1 - radLat2;// 两点纬度差
-        double b = getRadian(lng1) - getRadian(lng2);// 两点的�?度差
+        double b = getRadian(lng1) - getRadian(lng2);// 两点的�?度差
         double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(radLat1)
                 * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
         s = s * EARTH_RADIUS;
@@ -118,7 +122,9 @@ public class EventDao {
     public static boolean leaveEvent(long event_id, long account_id){
         try{
             if (EVENT_LIST.containsKey(event_id)){
-                EVENT_LIST.remove(event_id);
+                Event e = EVENT_LIST.get(event_id);
+                e.removeParticipant(account_id);
+                EVENT_LIST.put(e.getId(),e);
                 return true;
             }else {
                 return false;
@@ -131,7 +137,7 @@ public class EventDao {
     public static Event shakeJoinEvent(long account_id, double lat, double lng) throws ParseException{
         //first user
         if (SHAKE_LIST == null || SHAKE_LIST.size() == 0){
-            SHAKE_LIST = new HashMap<>();            
+            SHAKE_LIST = new HashMap<>();
                        
             ArrayList<String> userDetails = new ArrayList<>();
             Date time_stamp = new Date();
@@ -176,7 +182,7 @@ public class EventDao {
                             ArrayList<Long> list_of_participants = new ArrayList<>();
                             list_of_participants.add(account_id);
                             list_of_participants.add((Long)pair.getKey());
-                            Event new_event = createNewEvent(account_id, new Event(account_id, lat, lng, "", new Date(), Value.EVENT_STATUS_STARTED, "",  new ArrayList<>()));
+                            Event new_event = createNewEvent(account_id, new Event(account_id, lat, lng, "", new Date(), Value.EVENT_STATUS_STARTED, "",  new ArrayList<>(),2));
                             return new_event;
                         }
                         return null;

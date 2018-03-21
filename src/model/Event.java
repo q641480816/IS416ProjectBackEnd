@@ -28,6 +28,7 @@ public class Event {
     private String type;
     private String location;
     private ArrayList<Long> participants;
+    private int sizeLimit;
     
     public Event() {
         super();
@@ -42,6 +43,19 @@ public class Event {
         this.type = type;
         this.participants = participants;
         this.location = location;
+        this.sizeLimit = Integer.MAX_VALUE;
+    }
+
+    public Event(long account_id, double latitude, double longitude, String location, Date initTime, int status, String type, ArrayList<Long> participants, int sizeLimit) {
+        this.account_id = account_id;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.initTime = initTime;
+        this.status = status;
+        this.type = type;
+        this.participants = participants;
+        this.location = location;
+        this.sizeLimit = sizeLimit;
     }
 
     public long getId() {
@@ -110,10 +124,24 @@ public class Event {
         setParticipants(ps);
     }
 
+    public void removeParticipant(long id){
+        ArrayList<Long> ps = getParticipants();
+        ps.remove(ps.indexOf(id));
+        setParticipants(ps);
+    }
+
     public void setParticipants(ArrayList<Long> participants) {
         this.participants = participants;
     }
-    
+
+    public int getSizeLimit() {
+        return sizeLimit;
+    }
+
+    public void setSizeLimit(int sizeLimit) {
+        this.sizeLimit = sizeLimit;
+    }
+
     public JSONObject toJson(){
         JSONObject obj = new JSONObject();
         obj.put(Key.ID, this.account_id);
@@ -124,6 +152,7 @@ public class Event {
         obj.put(Key.TYPE, this.type);
         obj.put(Key.OWNER, UserDao.getAccountById(this.account_id).toJson());
         obj.put(Key.LOCATION, this.location);
+        obj.put(Key.SIZELIMIT,this.sizeLimit);
         JSONArray participants = new JSONArray();
         ArrayList<User> users = UserDao.getUsersByIds(this.participants);
         for (User u : users){
@@ -132,6 +161,4 @@ public class Event {
         obj.put(Key.PARTICIPANTS, participants);
         return obj;
     }
-    
-    
 }

@@ -1,5 +1,6 @@
 package model;
 
+import dao.EventDao;
 import org.json.simple.JSONObject;
 import util.Config;
 import util.Key;
@@ -113,6 +114,7 @@ public class User {
         obj.put(Key.GENDER, this.gender);
         obj.put(Key.DATE, Config.SDF.format(this.date));
         obj.put(Key.AVATAR, this.avatar);
+        obj.put(Key.USERSTATUS, EventDao.IN_EVENT_USERS.contains(this.accountId));
         return obj;
     }
 }
