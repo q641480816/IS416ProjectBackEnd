@@ -114,7 +114,7 @@ public class User {
         obj.put(Key.GENDER, this.gender);
         obj.put(Key.DATE, Config.SDF.format(this.date));
         obj.put(Key.AVATAR, this.avatar);
-        obj.put(Key.USERSTATUS, EventDao.IN_EVENT_USERS.contains(this.accountId));
+        obj.put(Key.USERSTATUS, EventDao.getUserStatus(this.accountId));
         return obj;
     }
 }

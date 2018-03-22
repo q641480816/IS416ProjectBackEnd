@@ -195,4 +195,13 @@ public class EventDao {
         
         return null;
     }
+
+    public static boolean getUserStatus(long id){
+        if (IN_EVENT_USERS == null){
+            IN_EVENT_USERS = new HashSet<>();
+            return false;
+        }else {
+            return IN_EVENT_USERS.contains(id);
+        }
+    }
 }
