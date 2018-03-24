@@ -110,13 +110,13 @@ public class Event extends HttpServlet{
 
             JSONObject inputJson = (JSONObject) JSONValue.parse(jb.toString());
             if (inputJson.containsKey(Key.LEAVE)){
-                returnJson = EventCtrl.joinEvent(inputJson);
-            }else if(inputJson.containsKey(Key.SHAKE)){
-                returnJson = EventCtrl.updateEventStatus(inputJson);
-            }else if(inputJson.containsKey(Key.EVENTSTATUS)){
                 returnJson = EventCtrl.leaveEvent(inputJson);
-            }else if(inputJson.containsKey(Key.ACCOUNTID)){
+            }else if(inputJson.containsKey(Key.SHAKE)){
                 returnJson = EventCtrl.shakeJoinEvent(inputJson);
+            }else if(inputJson.containsKey(Key.EVENTSTATUS)){
+                returnJson = EventCtrl.updateEventStatus(inputJson);
+            }else if(inputJson.containsKey(Key.ACCOUNTID)){
+                returnJson = EventCtrl.joinEvent(inputJson);
             }
             response.setStatus(200);
         } catch(Exception e) {
