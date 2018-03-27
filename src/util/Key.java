@@ -10,6 +10,7 @@ public class Key {
     //action    
     public static final String LEAVE = "leave";
     public static final String SHAKE = "shake";
+    public static final String UPDATEPROFILE = "updateProfile";
 
     //User
     public static final String USER = "user";

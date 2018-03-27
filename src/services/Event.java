@@ -7,8 +7,6 @@ package services;
 
 import ctrl.EventCtrl;
 
-import javax.naming.event.EventContext;
-import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

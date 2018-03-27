@@ -67,4 +67,35 @@ public class UserCtrl {
         }
         return returnJson;
     }
+    
+    public static JSONObject updateProfile(JSONObject inputJson) {
+        JSONObject returnJson = new JSONObject();
+        try {
+            Long accountId = (Long) inputJson.get(Key.ACCOUNTID);
+            
+            String nickname = (String) inputJson.get(Key.NICKNAME);
+            Integer gender = (Integer) inputJson.get(Key.GENDER);
+            String avatar = (String) inputJson.get(Key.AVATAR);
+            
+            User getUser = UserDao.getAccountById(accountId);
+            
+            if (getUser != null){                
+                getUser.setGender(gender);
+                getUser.setAvatar(avatar);
+                getUser.setNickName(nickname);
+                
+                UserDao.updateAccount(getUser);
+                
+                returnJson.put(Key.STATUS, Value.SUCCESS);
+            }else{
+                returnJson.put(Key.STATUS, Value.FAIL);
+                returnJson.put(Key.MESSAGE, Message.USER_ERROR);
+           }
+        }catch (Exception e){
+            e.printStackTrace();
+            returnJson.put(Key.STATUS, Value.EXCEPTION);
+            returnJson.put(Key.EXCEPTION, e.getMessage());
+        }
+        return returnJson;
+    }
 }
