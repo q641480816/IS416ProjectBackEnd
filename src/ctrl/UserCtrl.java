@@ -72,9 +72,8 @@ public class UserCtrl {
         JSONObject returnJson = new JSONObject();
         try {
             Long accountId = (Long) inputJson.get(Key.ACCOUNTID);
-            
             String nickname = (String) inputJson.get(Key.NICKNAME);
-            Integer gender = (Integer) inputJson.get(Key.GENDER);
+            int gender = (int) ((long)inputJson.get(Key.GENDER));
             String avatar = (String) inputJson.get(Key.AVATAR);
             
             User getUser = UserDao.getAccountById(accountId);
