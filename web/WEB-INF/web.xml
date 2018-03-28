@@ -10,8 +10,8 @@
     </servlet>
 
     <servlet>
-        <servlet-name>CreateUser</servlet-name>
-        <servlet-class>services.CreateUser</servlet-class>
+        <servlet-name>User</servlet-name>
+        <servlet-class>services.User</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Login</servlet-name>
@@ -29,8 +29,8 @@
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>CreateUser</servlet-name>
-        <url-pattern>/service/createUser</url-pattern>
+        <servlet-name>User</servlet-name>
+        <url-pattern>/service/user</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>

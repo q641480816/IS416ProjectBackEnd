@@ -98,7 +98,7 @@ public class EventDao {
 
         List<Event> out = EVENT_LIST.values().stream()
                 .parallel()
-                .filter(d -> Integer.MAX_VALUE == d.getSizeLimit() &&getDistance(d.getLatitude(),d.getLongitude(),latitude,longitude) < 1000)
+                .filter(d ->  Integer.MAX_VALUE == d.getSizeLimit() && getDistance(d.getLatitude(),d.getLongitude(),latitude,longitude) < 1000)
                 .collect(Collectors.toList());
 
         return out;
