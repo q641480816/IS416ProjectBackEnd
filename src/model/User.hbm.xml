@@ -19,7 +19,7 @@
         <property name="nickName" type="java.lang.String">
             <column name="NICKNAME" />
         </property>
-        <property name="avatar" type="java.lang.String">
+        <property name="avatar" type="materialized_clob">
             <column name="AVATAR" />
         </property>
         <property name="dateOfBirth" type="java.util.Date">
