@@ -21,7 +21,7 @@ import util.Value;
  */
 public class EventDao {    
 
-    public static HashSet<Long> IN_EVENT_USERS;
+    public static HashMap<Long, Long> IN_EVENT_USERS;
     public static HashMap<Long, Event> EVENT_LIST;
     private static double EARTH_RADIUS = 6378.137;
     private static final String DISTANCE = "distance";
@@ -48,11 +48,11 @@ public class EventDao {
     public static Event createNewEvent(long account_id, Event new_event){
         if(EVENT_LIST == null){
             EVENT_LIST = new HashMap<>();
-            IN_EVENT_USERS = new HashSet<>();
+            IN_EVENT_USERS = new HashMap<>();
         }
 
         EVENT_LIST.put(account_id, new_event);
-        IN_EVENT_USERS.add(account_id);
+        IN_EVENT_USERS.put(account_id, new_event.getId());
         return new_event;
     }
 
@@ -68,7 +68,7 @@ public class EventDao {
             if (EVENT_LIST.containsKey(event_id)){
                 Event e = EVENT_LIST.get(event_id);
                 e.addParticipant(account_id);
-                IN_EVENT_USERS.add(account_id);
+                IN_EVENT_USERS.put(account_id, event_id);
                 EVENT_LIST.put(e.getId(),e);
                 return e;
             }else {
@@ -196,12 +196,12 @@ public class EventDao {
         return null;
     }
 
-    public static boolean getUserStatus(long id){
+    public static long getUserStatus(long id){
         if (IN_EVENT_USERS == null){
-            IN_EVENT_USERS = new HashSet<>();
-            return false;
+            IN_EVENT_USERS = new HashMap<>();
+            return -1;
         }else {
-            return IN_EVENT_USERS.contains(id);
+            return IN_EVENT_USERS.get(id);
         }
     }
 }

@@ -38,7 +38,6 @@ public class User extends HttpServlet {
             }
             
             JSONObject inputJson = (JSONObject) JSONValue.parse(jb.toString());
-            
             returnJson = UserCtrl.createAccount(inputJson);
             
             response.setStatus(200);

@@ -9,4 +9,5 @@ public class Value {
     public static final int EVENT_STATUS_JOINING = 0;
     public static final int EVENT_STATUS_STARTED = 1;
     public static final int EVENT_STATUS_STOPPED = -1;
+    public static final int USER_NOT_IN_EVENT = -1;
 }
