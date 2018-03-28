@@ -82,7 +82,8 @@ public class EventDao {
     public static boolean closeEvent(long event_id){
         if (EVENT_LIST.containsKey(event_id)){
             Event e = EVENT_LIST.remove(event_id);
-            for(long uId : e.getParticipants()){
+            List<Long> uIds = e.getParticipants();
+            for(long uId : uIds){
                 IN_EVENT_USERS.remove(uId);
             }
             return true;
@@ -125,6 +126,7 @@ public class EventDao {
                 Event e = EVENT_LIST.get(event_id);
                 e.removeParticipant(account_id);
                 EVENT_LIST.put(e.getId(),e);
+                IN_EVENT_USERS.remove(account_id);
                 return true;
             }else {
                 return false;
@@ -201,7 +203,11 @@ public class EventDao {
             IN_EVENT_USERS = new HashMap<>();
             return -1;
         }else {
-            return IN_EVENT_USERS.get(id);
+            if (IN_EVENT_USERS.containsKey(id)) {
+                return IN_EVENT_USERS.get(id);
+            }else {
+                return -1;
+            }
         }
     }
 }
