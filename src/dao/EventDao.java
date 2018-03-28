@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import model.Event;
+import model.User;
 import util.Key;
 import util.Value;
 
@@ -136,66 +137,36 @@ public class EventDao {
         }
     }
     
-    public static Event shakeJoinEvent(long account_id, double lat, double lng) throws ParseException{
-        //first user
-        if (SHAKE_LIST == null || SHAKE_LIST.size() == 0){
-            SHAKE_LIST = new HashMap<>();
-                       
-            ArrayList<String> userDetails = new ArrayList<>();
-            Date time_stamp = new Date();
-            userDetails.add(time_stamp.toString());
-            userDetails.add("" + lat);
-            userDetails.add("" + lng);
-            
-            SHAKE_LIST.put(account_id, userDetails);
+    public static Event shakeJoinEvent(long account_id, double lat, double lng, String location) throws ParseException{
+        if (EVENT_LIST == null){
+            EVENT_LIST = new HashMap<>();
         }
-        
-        //add if cannot find user in the hashmap
-        if(!SHAKE_LIST.containsKey(account_id)){
-            ArrayList<String> userDetails = new ArrayList<>();
-            Date time_stamp = new Date();
-            userDetails.add(time_stamp.toString());
-            userDetails.add("" + lat);
-            userDetails.add("" + lng);
-
-            SHAKE_LIST.put(account_id, userDetails);
-        }
-                        
-        for(int i = 0; i < SHAKE_LIST.size(); i++){
-            Iterator it = SHAKE_LIST.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry)it.next();
-                ArrayList<String> retrieved_details = SHAKE_LIST.get(pair.getKey());
-                
-                SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-                Date user_date = format.parse(retrieved_details.get(0));
-                Date now_date = new Date();
-                    
-                if((now_date.getTime()  - user_date.getTime() ) / 1000 % 60 > 5) {
-                    //expired, remove this account from hashmap
-                    SHAKE_LIST.remove((Long)pair.getKey());
-                }
-                else{
-                    //check if within radius against other users
-                    if((Long)pair.getKey() != account_id){
-                        if(getDistance(lat, lng, Double.parseDouble(retrieved_details.get(1)), Double.parseDouble(retrieved_details.get(2))) > 2000){
-                            //match!
-                            //create event 
-                            ArrayList<Long> list_of_participants = new ArrayList<>();
-                            list_of_participants.add(account_id);
-                            list_of_participants.add((Long)pair.getKey());
-                            Event new_event = createNewEvent(account_id, new Event(account_id, lat, lng, "", new Date(), Value.EVENT_STATUS_STARTED, "",  new ArrayList<>(),2));
-                            return new_event;
-                        }
-                        return null;
-                    }                    
-                }
-                
-                it.remove(); // avoids a ConcurrentModificationException
+        //check if new
+        if (!EVENT_LIST.containsKey(account_id)){
+            //new
+            List<Event> out = EVENT_LIST.values().stream()
+                    .parallel()
+                    .filter(d ->  2 == d.getSizeLimit() && getDistance(d.getLatitude(),d.getLongitude(),lat,lng) < 2000)
+                    .sorted((d1,d2)->{
+                        return (int) (getDistance(d1.getLatitude(),d1.getLongitude(),lat,lng) - getDistance(d2.getLatitude(),d2.getLongitude(),lat,lng));
+                    })
+                    .collect(Collectors.toList());
+            if (out.size() == 0){
+                //new event
+                ArrayList<Long> ps = new ArrayList<>();
+                ps.add(account_id);
+                Event e = new Event(account_id, lat, lng, location, new Date(), Value.EVENT_STATUS_JOINING, "DATE", ps,2);
+                EVENT_LIST.put(account_id,e);
+                return e;
+            }else {
+                Event e = out.get(0);
+                e.addParticipant(account_id);
+                EVENT_LIST.put(e.getId(), e);
+                return e;
             }
+        }else {
+            return EVENT_LIST.get(account_id);
         }
-        
-        return null;
     }
 
     public static long getUserStatus(long id){

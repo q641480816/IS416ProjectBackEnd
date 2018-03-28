@@ -14,6 +14,8 @@ import util.Message;
 import util.Value;
 
 import javax.json.Json;
+import javax.swing.plaf.basic.BasicBorders;
+import javax.swing.plaf.basic.BasicOptionPaneUI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -167,14 +169,22 @@ public class EventCtrl {
     public static JSONObject shakeJoinEvent(JSONObject inputJson) {
         JSONObject returnJson = new JSONObject();
         try {
-            long id = (long) inputJson.get(Key.ID);
             long account_id = (long) inputJson.get(Key.ACCOUNTID);
             double latitude = (double) inputJson.get(Key.LATITUDE);
             double longitude = (double) inputJson.get(Key.LONGITUDE);
-            
-            Event shake_event = EventDao.shakeJoinEvent(account_id, latitude, longitude);
+            String location = (String) inputJson.get(Key.LOCATION);
+            boolean lastCall = (boolean) inputJson.get(Key.LASTCALL);
+
+
+            Event shake_event = EventDao.shakeJoinEvent(account_id, latitude, longitude,location);
+            if (lastCall && shake_event.getParticipants().size() < 2){
+                EventDao.closeEvent(shake_event.getId());
+            }
             if(shake_event != null){
-                returnJson.put(Key.DATA, shake_event.toJson());
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put(Key.ID, shake_event.getId());
+                jsonObject.put(Key.EVENTSTATUS, shake_event.getParticipants().size() == 2);
+                returnJson.put(Key.DATA, jsonObject);
                 returnJson.put(Key.STATUS, Value.SUCCESS);
             }else{
                 returnJson.put(Key.STATUS, Value.FAIL);

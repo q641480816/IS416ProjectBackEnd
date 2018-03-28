@@ -38,4 +38,5 @@ public class Key {
     public static final String SOCKETURL = "socketUrl";
     public static final String LOCATION = "location";
     public static final String SIZELIMIT = "sizeLimit";
+    public static final String LASTCALL = "lastCall";
 }
