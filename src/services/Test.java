@@ -4,7 +4,6 @@ import util.Config;
 import util.Key;
 import util.Value;
 import org.json.simple.JSONObject;
-import websocket.EventWebSocketServer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,7 +27,6 @@ public class Test extends HttpServlet {
         try {
             JSONObject obj = new JSONObject();
             obj.put(Key.MESSAGE,"Test respond successfully");
-            EventWebSocketServer.startServer();
             returnJson.put(Key.STATUS, Value.SUCCESS);
             returnJson.put(Key.DATA, obj);
             response.setStatus(200);

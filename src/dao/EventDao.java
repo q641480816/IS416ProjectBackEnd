@@ -5,16 +5,13 @@
  */
 package dao;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import model.Event;
-import model.User;
 import util.Key;
 import util.Value;
-import websocket.EventWebSocketServer;
+import websocket.WsServer;
 
 
 /**
@@ -74,7 +71,7 @@ public class EventDao {
                 IN_EVENT_USERS.put(account_id, event_id);
                 EVENT_LIST.put(e.getId(),e);
                 //UPDATE
-                EventWebSocketServer.sendMessage(e.getParticipants(), Key.SOCKETUPDATE + ":DADAS");
+                WsServer.sendMessage(e.getParticipants(), Key.SOCKETUPDATE + ":DADAS");
                 return e;
             }else {
                 return null;
@@ -91,7 +88,7 @@ public class EventDao {
             for(long uId : uIds){
                 IN_EVENT_USERS.remove(uId);
             }
-            EventWebSocketServer.sendMessage(uIds, Key.SOCKETCLOSE + ":DADAS");
+            WsServer.sendMessage(uIds, Key.SOCKETCLOSE + ":DADAS");
             return true;
         }else {
             return false;
@@ -133,7 +130,7 @@ public class EventDao {
                 e.removeParticipant(account_id);
                 EVENT_LIST.put(e.getId(),e);
                 IN_EVENT_USERS.remove(account_id);
-                EventWebSocketServer.sendMessage(e.getParticipants(), Key.SOCKETUPDATE + ":DADAS");
+                WsServer.sendMessage(e.getParticipants(), Key.SOCKETUPDATE + ":DADAS");
                 return true;
             }else {
                 return false;
