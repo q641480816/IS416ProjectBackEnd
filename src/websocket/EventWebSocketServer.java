@@ -27,7 +27,7 @@ public class EventWebSocketServer extends WebSocketServer {
     }
 
     public EventWebSocketServer(int port) throws UnknownHostException {
-        super(new InetSocketAddress("35.198.245.25",port));
+        super(new InetSocketAddress("10.148.0.2",port));
     }
 
     public EventWebSocketServer(InetSocketAddress address) {
