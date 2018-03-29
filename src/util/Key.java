@@ -39,4 +39,11 @@ public class Key {
     public static final String LOCATION = "location";
     public static final String SIZELIMIT = "sizeLimit";
     public static final String LASTCALL = "lastCall";
+
+    //socket
+    public static final String SOCKETSTATUS = "status";
+    public static final String SOCKETREGISTER = "register";
+    public static final String SOCKETUNREGISTER = "unregister";
+    public static final String SOCKETUPDATE = "update";
+    public static final String SOCKETCLOSE = "close";
 }

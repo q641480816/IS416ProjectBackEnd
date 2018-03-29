@@ -14,6 +14,7 @@ import model.Event;
 import model.User;
 import util.Key;
 import util.Value;
+import websocket.EventWebSocketServer;
 
 
 /**
@@ -72,6 +73,8 @@ public class EventDao {
                 e.addParticipant(account_id);
                 IN_EVENT_USERS.put(account_id, event_id);
                 EVENT_LIST.put(e.getId(),e);
+                //UPDATE
+                EventWebSocketServer.sendMessage(e.getParticipants(), Key.SOCKETUPDATE + ":DADAS");
                 return e;
             }else {
                 return null;
@@ -88,6 +91,7 @@ public class EventDao {
             for(long uId : uIds){
                 IN_EVENT_USERS.remove(uId);
             }
+            EventWebSocketServer.sendMessage(uIds, Key.SOCKETCLOSE + ":DADAS");
             return true;
         }else {
             return false;
@@ -129,6 +133,7 @@ public class EventDao {
                 e.removeParticipant(account_id);
                 EVENT_LIST.put(e.getId(),e);
                 IN_EVENT_USERS.remove(account_id);
+                EventWebSocketServer.sendMessage(e.getParticipants(), Key.SOCKETUPDATE + ":DADAS");
                 return true;
             }else {
                 return false;
@@ -152,9 +157,7 @@ public class EventDao {
             List<Event> out = EVENT_LIST.values().stream()
                     .parallel()
                     .filter(d ->  2 == d.getSizeLimit() && getDistance(d.getLatitude(),d.getLongitude(),lat,lng) < 2000)
-                    .sorted((d1,d2)->{
-                        return (int) (getDistance(d1.getLatitude(),d1.getLongitude(),lat,lng) - getDistance(d2.getLatitude(),d2.getLongitude(),lat,lng));
-                    })
+                    .sorted((d1,d2)-> (int) (getDistance(d1.getLatitude(),d1.getLongitude(),lat,lng) - getDistance(d2.getLatitude(),d2.getLongitude(),lat,lng)))
                     .collect(Collectors.toList());
             if (out.size() == 0){
                 //new event
