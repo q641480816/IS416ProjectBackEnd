@@ -3,12 +3,11 @@ package websocket;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import org.omg.PortableServer.POA;
-import services.Event;
 import util.Key;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.Collection;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -19,12 +18,16 @@ public class EventWebSocketServer extends WebSocketServer {
 
     public static void startServer(){
         pool = new HashMap<>();
-        socketServer = new EventWebSocketServer(9997);
+        try {
+            socketServer = new EventWebSocketServer(9997);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         socketServer.start();
     }
 
-    public EventWebSocketServer(int port) {
-        super(new InetSocketAddress(port));
+    public EventWebSocketServer(int port) throws UnknownHostException {
+        super(new InetSocketAddress("35.198.245.25",port));
     }
 
     public EventWebSocketServer(InetSocketAddress address) {
