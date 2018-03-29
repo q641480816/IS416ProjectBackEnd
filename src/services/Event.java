@@ -42,7 +42,6 @@ public class Event extends HttpServlet{
                 String[] subArgs = args[2].split(",");
                 returnJson = EventCtrl.getEventsInRange(Double.parseDouble(subArgs[0]),Double.parseDouble(subArgs[1]));
             }else if(args.length == 2){
-                System.out.println(request.getPathInfo());
                 returnJson = EventCtrl.getEvent(Long.parseLong(args[1]));
             }else {
                 returnJson = EventCtrl.getEvents();

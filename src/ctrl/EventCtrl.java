@@ -82,26 +82,31 @@ public class EventCtrl {
         JSONObject returnJson = new JSONObject();
         try {
             Long account_id = (Long) inputJson.get(Key.ACCOUNTID);
-            double latitude = (double) inputJson.get(Key.LATITUDE);
-            double longitude = (double) inputJson.get(Key.LONGITUDE);
-            String location = (String)  inputJson.get(Key.LOCATION);
-            Date init_time = new Date();
-            int event_status = Value.EVENT_STATUS_JOINING;
-            String type = (String) inputJson.get(Key.TYPE);
+            if (EventDao.getUserStatus(account_id) == -1){
+                double latitude = (double) inputJson.get(Key.LATITUDE);
+                double longitude = (double) inputJson.get(Key.LONGITUDE);
+                String location = (String) inputJson.get(Key.LOCATION);
+                Date init_time = new Date();
+                int event_status = Value.EVENT_STATUS_JOINING;
+                String type = (String) inputJson.get(Key.TYPE);
 
-            ArrayList<Long> list_of_participants = new ArrayList<>();
-            list_of_participants.add(account_id);
-            
-            Event new_event = new Event(account_id, latitude, longitude, location, init_time, event_status, type, list_of_participants);
-            
-            if(EventDao.createNewEvent(account_id, new_event) != null){
-                JSONObject content = new JSONObject();
-                content.put(Key.EVENT, new_event.toJson());
-                returnJson.put(Key.STATUS, Value.SUCCESS);
-                returnJson.put(Key.DATA, content); 
-            }else{
+                ArrayList<Long> list_of_participants = new ArrayList<>();
+                list_of_participants.add(account_id);
+
+                Event new_event = new Event(account_id, latitude, longitude, location, init_time, event_status, type, list_of_participants);
+
+                if (EventDao.createNewEvent(account_id, new_event) != null) {
+                    JSONObject content = new JSONObject();
+                    content.put(Key.EVENT, new_event.toJson());
+                    returnJson.put(Key.STATUS, Value.SUCCESS);
+                    returnJson.put(Key.DATA, content);
+                } else {
+                    returnJson.put(Key.STATUS, Value.FAIL);
+                    returnJson.put(Key.MESSAGE, Message.USER_EXIST);
+                }
+            }else {
+                returnJson.put(Key.MESSAGE, "In event, no entry");
                 returnJson.put(Key.STATUS, Value.FAIL);
-                returnJson.put(Key.MESSAGE, Message.USER_EXIST);
             }
         }catch (Exception e){
             returnJson.put(Key.STATUS, Value.EXCEPTION);
@@ -115,11 +120,16 @@ public class EventCtrl {
         try {
             long id = (long) inputJson.get(Key.ID);
             long account_id = (long) inputJson.get(Key.ACCOUNTID);
-            Event event = EventDao.joinEvent(id, account_id);
-            if(event != null){
-                returnJson.put(Key.DATA, event.toJson());
-                returnJson.put(Key.STATUS, Value.SUCCESS);
+            if (EventDao.getUserStatus(account_id) == -1){
+                Event event = EventDao.joinEvent(id, account_id);
+                if(event != null){
+                    returnJson.put(Key.DATA, event.toJson());
+                    returnJson.put(Key.STATUS, Value.SUCCESS);
+                }else{
+                    returnJson.put(Key.STATUS, Value.FAIL);
+                }
             }else{
+                returnJson.put(Key.MESSAGE, "In event, no entry");
                 returnJson.put(Key.STATUS, Value.FAIL);
             }
         }catch (Exception e){
@@ -175,21 +185,23 @@ public class EventCtrl {
             String location = (String) inputJson.get(Key.LOCATION);
             boolean lastCall = (boolean) inputJson.get(Key.LASTCALL);
 
-
-            Event shake_event = EventDao.shakeJoinEvent(account_id, latitude, longitude,location);
-            if (lastCall && shake_event.getParticipants().size() < 2){
-                EventDao.closeEvent(shake_event.getId());
-            }
-            if(shake_event != null){
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put(Key.ID, shake_event.getId());
-                jsonObject.put(Key.EVENTSTATUS, shake_event.getParticipants().size() == 2);
-                returnJson.put(Key.DATA, jsonObject);
-                returnJson.put(Key.STATUS, Value.SUCCESS);
-            }else{
+            if  (EventDao.getUserStatus(account_id) == -1) {
+                Event shake_event = EventDao.shakeJoinEvent(account_id, latitude, longitude, location, lastCall);
+                if (shake_event != null) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put(Key.ID, shake_event.getId());
+                    jsonObject.put(Key.EVENTSTATUS, shake_event.getParticipants().size() == 2);
+                    returnJson.put(Key.DATA, jsonObject);
+                    returnJson.put(Key.STATUS, Value.SUCCESS);
+                } else {
+                    returnJson.put(Key.STATUS, Value.FAIL);
+                }
+            }else {
                 returnJson.put(Key.STATUS, Value.FAIL);
+                returnJson.put(Key.MESSAGE, "In event, no entry");
             }
         }catch (Exception e){
+            e.printStackTrace();
             returnJson.put(Key.STATUS, Value.EXCEPTION);
             returnJson.put(Key.EXCEPTION, e.getMessage());
         }

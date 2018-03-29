@@ -23,6 +23,7 @@ import util.Value;
 public class EventDao {    
 
     public static HashMap<Long, Long> IN_EVENT_USERS;
+    public static HashMap<Long, Long> PENDING_IN_EVENT_USERS;
     public static HashMap<Long, Event> EVENT_LIST;
     private static double EARTH_RADIUS = 6378.137;
     private static final String DISTANCE = "distance";
@@ -137,11 +138,15 @@ public class EventDao {
         }
     }
     
-    public static Event shakeJoinEvent(long account_id, double lat, double lng, String location) throws ParseException{
+    public static Event shakeJoinEvent(long account_id, double lat, double lng, String location, boolean lastCall) throws Exception{
         if (EVENT_LIST == null){
             EVENT_LIST = new HashMap<>();
         }
+        if (PENDING_IN_EVENT_USERS == null){
+            PENDING_IN_EVENT_USERS = new HashMap<>();
+        }
         //check if new
+        Event e;
         if (!EVENT_LIST.containsKey(account_id)){
             //new
             List<Event> out = EVENT_LIST.values().stream()
@@ -155,18 +160,35 @@ public class EventDao {
                 //new event
                 ArrayList<Long> ps = new ArrayList<>();
                 ps.add(account_id);
-                Event e = new Event(account_id, lat, lng, location, new Date(), Value.EVENT_STATUS_JOINING, "DATE", ps,2);
+                e = new Event(account_id, lat, lng, location, new Date(), Value.EVENT_STATUS_JOINING, "DATE", ps,2);
                 EVENT_LIST.put(account_id,e);
-                return e;
             }else {
-                Event e = out.get(0);
+                e = out.get(0);
                 e.addParticipant(account_id);
                 EVENT_LIST.put(e.getId(), e);
-                return e;
+            }
+            PENDING_IN_EVENT_USERS.put(account_id, e.getId());
+            if (e.getParticipants().size() == 2){
+                List<Long> us = e.getParticipants();
+                for (long u : us){
+                    PENDING_IN_EVENT_USERS.remove(u);
+                    IN_EVENT_USERS.put(u, e.getId());
+                }
             }
         }else {
-            return EVENT_LIST.get(account_id);
+            e = EVENT_LIST.get(account_id);
         }
+
+        if (lastCall && e.getParticipants().size() < 2){
+            EVENT_LIST.remove(e.getId());
+            List<Long> us = e.getParticipants();
+            for (long u : us){
+                PENDING_IN_EVENT_USERS.remove(u);
+            }
+        }
+
+        System.out.println(PENDING_IN_EVENT_USERS);
+        return e;
     }
 
     public static long getUserStatus(long id){
