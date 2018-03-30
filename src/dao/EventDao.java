@@ -94,8 +94,8 @@ public class EventDao {
             }
 
             //update socket
-            WsServer.sendMessageExcept(uIds, event_id ,Key.SOCKETCLOSE + ":" + event_id);
-            WsServer.sendToAllExcept(uIds.stream().collect(Collectors.toSet()), Key.SOCKETREMOVE + ":DAASDDA");
+            WsServer.sendMessageExcept(uIds, event_id ,Key.SOCKETCLOSE + ":DADAS");
+            WsServer.sendToAllExcept(uIds.stream().collect(Collectors.toSet()), Key.SOCKETREMOVE + ":" + event_id);
             return true;
         }else {
             return false;
