@@ -5,6 +5,7 @@ import util.Key;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -65,6 +66,20 @@ public class WsServer {
     public static void sendMessage(List<Long> ids, String message){
         for (long id : ids){
             if (POOL.containsKey(id)){
+                System.out.println("onSend");
+                try {
+                    POOL.get(id).getBasicRemote().sendText(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void sendToAllExcept(Set<Long> dp, String message){
+        Set<Long> ids = POOL.keySet();
+        for (long id : ids){
+            if (!dp.contains(id)){
                 System.out.println("onSend");
                 try {
                     POOL.get(id).getBasicRemote().sendText(message);

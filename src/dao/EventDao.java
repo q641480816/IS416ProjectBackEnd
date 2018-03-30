@@ -53,6 +53,8 @@ public class EventDao {
 
         EVENT_LIST.put(account_id, new_event);
         IN_EVENT_USERS.put(account_id, new_event.getId());
+
+        WsServer.sendToAllExcept(IN_EVENT_USERS.keySet(), Key.SOCKETADDNEWEVENT + ":" + new_event.getId());
         return new_event;
     }
 
@@ -70,8 +72,11 @@ public class EventDao {
                 e.addParticipant(account_id);
                 IN_EVENT_USERS.put(account_id, event_id);
                 EVENT_LIST.put(e.getId(),e);
-                //UPDATE
-                WsServer.sendMessage(e.getParticipants(), Key.SOCKETUPDATE + ":DADAS");
+
+                //Socket update
+                List<Long> ps = e.getParticipants();
+                ps.remove(ps.indexOf(account_id));
+                WsServer.sendMessage(ps, Key.SOCKETUPDATE + ":DADAS");
                 return e;
             }else {
                 return null;
@@ -88,6 +93,9 @@ public class EventDao {
             for(long uId : uIds){
                 IN_EVENT_USERS.remove(uId);
             }
+
+            //Socket update
+            uIds.remove(uIds.indexOf(event_id));
             WsServer.sendMessage(uIds, Key.SOCKETCLOSE + ":DADAS");
             return true;
         }else {
@@ -102,7 +110,7 @@ public class EventDao {
 
         List<Event> out = EVENT_LIST.values().stream()
                 .parallel()
-                .filter(d ->  Integer.MAX_VALUE == d.getSizeLimit() && getDistance(d.getLatitude(),d.getLongitude(),latitude,longitude) < 1000)
+                .filter(d ->  Integer.MAX_VALUE == d.getSizeLimit() && getDistance(d.getLatitude(),d.getLongitude(),latitude,longitude) < 10000)
                 .collect(Collectors.toList());
 
         return out;
@@ -130,6 +138,7 @@ public class EventDao {
                 e.removeParticipant(account_id);
                 EVENT_LIST.put(e.getId(),e);
                 IN_EVENT_USERS.remove(account_id);
+
                 WsServer.sendMessage(e.getParticipants(), Key.SOCKETUPDATE + ":DADAS");
                 return true;
             }else {

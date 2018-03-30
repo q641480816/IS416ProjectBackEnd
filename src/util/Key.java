@@ -46,4 +46,5 @@ public class Key {
     public static final String SOCKETUNREGISTER = "unregister";
     public static final String SOCKETUPDATE = "update";
     public static final String SOCKETCLOSE = "close";
+    public static final String SOCKETADDNEWEVENT = "add";
 }
