@@ -74,9 +74,8 @@ public class EventDao {
                 EVENT_LIST.put(e.getId(),e);
 
                 //Socket update
-                List<Long> ps = e.getParticipants();
-                ps.remove(ps.indexOf(account_id));
-                WsServer.sendMessage(ps, Key.SOCKETUPDATE + ":DADAS");
+
+                WsServer.sendMessageExcept(e.getParticipants(), account_id,Key.SOCKETUPDATE + ":DADAS");
                 return e;
             }else {
                 return null;
@@ -94,9 +93,8 @@ public class EventDao {
                 IN_EVENT_USERS.remove(uId);
             }
 
-            //Socket update
-            uIds.remove(uIds.indexOf(event_id));
-            WsServer.sendMessage(uIds, Key.SOCKETCLOSE + ":DADAS");
+            //update socket
+            WsServer.sendMessageExcept(uIds, event_id ,Key.SOCKETCLOSE + ":DADAS");
             return true;
         }else {
             return false;
@@ -139,7 +137,8 @@ public class EventDao {
                 EVENT_LIST.put(e.getId(),e);
                 IN_EVENT_USERS.remove(account_id);
 
-                WsServer.sendMessage(e.getParticipants(), Key.SOCKETUPDATE + ":DADAS");
+                //update
+                WsServer.sendMessageExcept(e.getParticipants(), account_id, Key.SOCKETUPDATE + ":DADAS");
                 return true;
             }else {
                 return false;

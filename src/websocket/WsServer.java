@@ -63,9 +63,9 @@ public class WsServer {
         e.printStackTrace();
     }
 
-    public static void sendMessage(List<Long> ids, String message){
+    public static void sendMessageExcept(List<Long> ids,long except, String message){
         for (long id : ids){
-            if (POOL.containsKey(id)){
+            if (POOL.containsKey(id) && id != except){
                 System.out.println("onSend");
                 try {
                     POOL.get(id).getBasicRemote().sendText(message);
